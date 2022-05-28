@@ -1,11 +1,9 @@
-from keras.layers import Dense, Conv2D, MaxPooling2D, UpSampling2D
-from keras import Input, Model
-from keras.datasets import mnist
+from keras.layers import Dense
+from keras import Input, Model, utils
 import numpy as np
 import matplotlib.pyplot as plt
-import functions as f
 import random
-
+from AE_services import add_irrelevant_signal, read_data
 
 # provide the number of dimensions that will decide how much the input will be compressed
 encoding_dim = 15
@@ -15,17 +13,18 @@ encoded = Dense(encoding_dim, activation='relu')(input_img)
 # decoded representation of code
 decoded = Dense(784, activation='sigmoid')(encoded)
 # Model which take input image and shows decoded images
-autoencoder = Model(input_img, decoded)
+autoencoder = Model(inputs=input_img, outputs=decoded)
+utils.plot_model(autoencoder, "my_first_model_with_shape_info.png", show_shapes=True)
 
-# build the encoder model and decoder model separately so that we can easily differentiate between the input and output
-# This model shows encoded images
-encoder = Model(input_img, encoded)
-# Creating a decoder model
-encoded_input = Input(shape=(encoding_dim,))
-# last layer of the autoencoder model
-decoder_layer = autoencoder.layers[-1]
-# decoder model
-decoder = Model(encoded_input, decoder_layer(encoded_input))
+# # build the encoder model and decoder model separately so that we can easily differentiate between the input and output
+# # This model shows encoded images
+# encoder = Model(input_img, encoded)
+# # Creating a decoder model
+# encoded_input = Input(shape=(encoding_dim,))
+# # last layer of the autoencoder model
+# decoder_layer = autoencoder.layers[-1]
+# # decoder model
+# decoder = Model(encoded_input, decoder_layer(encoded_input))
 
 
 # compile the model with the ADAM optimizer and cross-entropy loss function fitment
@@ -33,20 +32,11 @@ autoencoder.compile(optimizer='adam', loss='binary_crossentropy')
 
 
 # load the data
-(x_train, _), (x_test, _) = mnist.load_data()
-x_train = x_train.astype('float32') / 255.
-x_test = x_test.astype('float32') / 255.
-x_train = x_train.reshape((len(x_train), np.prod(x_train.shape[1:])))
-x_test = x_test.reshape((len(x_test), np.prod(x_test.shape[1:])))
-# add noise (both regular and random)
-n = random.randrange(60, 120)  # number of dots added to each image
-start_point = random.randrange(0, 10)
-x_train_regular_noise, x_train_random_noise = f.add_irrelevant_signal(x_train, n, start_point)
-x_test_regular_noise, x_test_random_noise = f.add_irrelevant_signal(x_test, n, start_point)
+x_train, x_test = read_data.read_data()
+# add the irrelevant signals (regular / random)
+x_train_regular_noise, x_train_random_noise = add_irrelevant_signal.add_irrelevant_signal(x_train)
+x_test_regular_noise, x_test_random_noise = add_irrelevant_signal.add_irrelevant_signal(x_test)
 
-
-
-# ############################################################################################################################
 # train
 autoencoder.fit(x_train_regular_noise, x_train,
                 epochs=15,
@@ -55,8 +45,11 @@ autoencoder.fit(x_train_regular_noise, x_train,
                 validation_split=0.2)
 
 # provide new noisy input for testing the reconstruction
-encoded_img = encoder.predict(x_test_regular_noise)  # MUST UNDERSTAND WHY NOT USE autoencoder HERE!!!!!
-decoded_img = decoder.predict(encoded_img)  # AND ALSO HERE!!!!!
+# encoded_img = encoder.predict(x_test_regular_noise)  # MUST UNDERSTAND WHY NOT USE autoencoder HERE!!!!!
+# decoded_img = decoder.predict(encoded_img)  # AND ALSO HERE!!!!!
+
+decoded_img = autoencoder.predict(x_test_regular_noise)
+
 plt.figure(figsize=(6, 4))
 for i in range(3):
     # Display original
