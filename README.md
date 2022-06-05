@@ -1,6 +1,6 @@
 # My ignoring machine
 
-## Do machines care about patterns in irrelevant information? 
+## Do machines care about patterns in noise? 
 
 Real world inputs often include a certain amount of irrelevant information.
 This could be entirely random, aka 'noise', but is can also contain some regularities that make it structured and predictable.
