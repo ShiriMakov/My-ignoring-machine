@@ -1,4 +1,3 @@
-# taken from: https://keras.io/examples/vision/autoencoder/
 
 import os
 import numpy as np
