@@ -3,7 +3,7 @@
 ## Do machines care about patterns in noise? 
 
 Real world inputs often include a certain amount of irrelevant information.
-This could be entirely random, aka 'noise', but is can also contain some regularities that make it structured and predictable.
+This could be entirely random, aka 'noise', however it may contain some regularities that make it structured and predictable.
 
 I was wodering whether the fact that irrelevant information has a consistent structure affects the ability of an ML algorithm to ingore it.
 Here I suggest a way to test this.
