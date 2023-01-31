@@ -5,8 +5,8 @@
 Real world inputs often include a certain amount of irrelevant information.
 This could be entirely random, aka 'noise', however it may contain some regularities that make it structured and predictable.
 
-I was wodering whether the fact that irrelevant information has a consistent structure affects the ability of an ML algorithm to ingore it.
-Here I suggest a way to test this.
+As part of my PhD I teted how the human brain copes with irrelevant information, and found that when noise has a predictable structure it is more easily ignored.
+In this project, I created a model of this test and presented it to a ML algorithm, to see whether the learning machine also benefits from structure in noise.
 
 I used the MNIST dataset, classicaly used for digit-recognition tasks.
 I added irrelevant information to the images and utilized the dataset to train an denoising autoencoder, namely a machine that learns to remove irrelevant information from given inputs.
